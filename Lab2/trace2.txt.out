@@ -1,0 +1,49 @@
+1:* trace2.txt - another simple memory trace.
+2:* No errors or mismatches should occur except as specified in the comments.
+3:* Set memory size to 1MB
+4:0f00  800
+5:
+6:* Check that memory is initialized to 0
+7:cba   200000 00000000 00
+8:
+9:* Preset all memory
+10:0030A 200000 0 CB
+11:
+12:* Check that memory is initialized to CB
+13:00CBa 200000 0 cb
+14:
+15:* Set some bytes
+16:301   1f0c00 a0 b1 c2 d3 e4 f5
+17:30a   4 1f0c07 4b
+18:
+19:* Copy some bytes
+20:31d   2 1f0c0c 1f0c01
+21:
+22:* Compare bytes - should be 2 mismatches
+23:cB1   1f0bff cb a0 b1 c2 d3 e4 f5 aa 4b 4b 4b 4b bb b1 c2 cb
+compare error at address 001f0c06, expected aa, actual is cb
+compare error at address 001f0c0b, expected bb, actual is cb
+24:
+25:* Compare all memory - should be 12 (decimal) mismatches
+26:00CBa 200000 0 cB
+compare error at address 001f0c00, expected cb, actual is a0
+compare error at address 001f0c01, expected cb, actual is b1
+compare error at address 001f0c02, expected cb, actual is c2
+compare error at address 001f0c03, expected cb, actual is d3
+compare error at address 001f0c04, expected cb, actual is e4
+compare error at address 001f0c05, expected cb, actual is f5
+compare error at address 001f0c07, expected cb, actual is 4b
+compare error at address 001f0c08, expected cb, actual is 4b
+compare error at address 001f0c09, expected cb, actual is 4b
+compare error at address 001f0c0a, expected cb, actual is 4b
+compare error at address 001f0c0c, expected cb, actual is b1
+compare error at address 001f0c0d, expected cb, actual is c2
+27:
+28:* Print some bytes
+29:0004f0  38 1f0be8
+001f0be8: cb,cb,cb,cb,cb,cb,cb,cb,cb,cb,cb,cb,cb,cb,cb,cb
+001f0bf8: cb,cb,cb,cb,cb,cb,cb,cb,a0,b1,c2,d3,e4,f5,cb,4b
+001f0c08: 4b,4b,4b,cb,b1,c2,cb,cb,cb,cb,cb,cb,cb,cb,cb,cb
+001f0c18: cb,cb,cb,cb,cb,cb,cb,cb
+30:
+31:* End of trace  

@@ -1,0 +1,53 @@
+1:* trace1.txt - simple memory trace.
+2:* No errors or mismatches should occur except as specified in the comments.
+3:
+4:* Set memory size to 143KB (0x23C00 bytes)
+5:F00   8F
+6:  
+7:* Check that all memory is initialized to 0
+8:cba   23c00 0 00
+9:
+10:* Store some bytes and then compare
+11:301   1F001 12 bc 56 78 9a
+12:301   1f002 34
+13:CB1   1f000 00 12 34 56 78 9a 00
+14:
+15:* Compare all memory again - should find 5 mismatches
+16:cba   23c00 0 00
+compare error at address 0001f001, expected 00, actual is 12
+compare error at address 0001f002, expected 00, actual is 34
+compare error at address 0001f003, expected 00, actual is 56
+compare error at address 0001f004, expected 00, actual is 78
+compare error at address 0001f005, expected 00, actual is 9a
+17:
+18:* Try copying data to end of memory and compare it
+19:031d  5 23bfb 1f001
+20:00cb1 23bfa 00 12 34 56 78 9a
+21:
+22:* Fill some bytes with the same value
+23:30A   400 2000 AB
+24:
+25:* Compare - first and last addresses should be mismatch
+26:00000cba  402 1fff ab
+compare error at address 00001fff, expected ab, actual is 00
+compare error at address 00002400, expected ab, actual is 00
+27:
+28:* Print some data
+29:4F0   30 1eff0
+0001eff0: 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+0001f000: 00,12,34,56,78,9a,00,00,00,00,00,00,00,00,00,00
+0001f010: 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+30:
+31:* Increase the memory size to 144KB (0x24000 bytes)
+32:00f00 90
+33:
+34:* Make sure new memory is set to 0
+35:CBA   400 23c00 00
+36:
+37:* Print some more data
+38:4f0   30  23bf0
+00023bf0: 00,00,00,00,00,00,00,00,00,00,00,12,34,56,78,9a
+00023c00: 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+00023c10: 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+39:
+40:* End of trace
